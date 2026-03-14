@@ -1,6 +1,7 @@
 export const site = {
-  name: "Nicola Paonessa",
-  title: "Nicola Paonessa — Communication, AI & Research",
+  name: "Communication Space",
+  author: "Nicola Paonessa",
+  title: "Communication Space — Nicola Paonessa",
   description:
     "Communication student exploring AI, digital systems and opinion formation.",
   email: "nicola.paonessa200423@gmail.com",
