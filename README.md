@@ -108,6 +108,6 @@ Posts automatically appear on `/en/blog/` or `/it/blog/` based on `lang`.
   - `src/pages/sitemap.xml.js` (`SITE` fallback)
   - `public/robots.txt` (sitemap URL)
 - Update email and socials in `src/data/site.ts`.
-- Configure Giscus IDs in `src/components/Giscus.astro` (repo-id, category-id).
+- If you want a dedicated “Blog Comments” category, rename the GitHub Discussions category “General” or create it manually, then update `src/components/Giscus.astro`.
 - Substack URL (optional) in `src/data/site.ts` (`newsletter.substackUrl`).
 ```
