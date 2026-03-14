@@ -1,0 +1,19 @@
+---
+import { site } from "../data/site";
+
+const { lang } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-ink-200/60 dark:border-ink-700/60">
+  <div class="container-wide flex flex-col gap-6 py-10 text-sm md:flex-row md:items-center md:justify-between">
+    <p class="text-ink-600 dark:text-ink-300">© {year} {site.name}. All rights reserved.</p>
+    <div class="flex flex-wrap gap-4">
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+      <a href={site.social.github}>GitHub</a>
+      <a href={site.social.linkedin}>LinkedIn</a>
+      <a href="/rss.xml">RSS feed</a>
+      <a href={site.ogImage}>OpenGraph image</a>
+    </div>
+  </div>
+</footer>

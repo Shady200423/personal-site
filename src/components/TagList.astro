@@ -1,0 +1,12 @@
+---
+const { tags, lang } = Astro.props;
+---
+
+<div class="flex flex-wrap gap-2">
+  {tags.map((tag) => {
+    const slug = encodeURIComponent(tag.toLowerCase());
+    return (
+      <a class="tag" href={`/${lang}/blog/tags/${slug}/`}>{tag}</a>
+    );
+  })}
+</div>

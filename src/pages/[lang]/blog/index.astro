@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { languages, site } from "../../../data/site";
+import SearchBar from "../../../components/SearchBar.astro";
+import BlogCard from "../../../components/BlogCard.astro";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const { lang } = Astro.params;
+const posts = (await getCollection("blog"))
+  .filter((entry) => entry.data.lang === lang)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout
+  title={`${lang === "it" ? "Blog" : "Blog"} — ${site.name}`}
+  description={lang === "it" ? "Articoli e note di ricerca." : "Articles and research notes."}
+  lang={lang}
+>
+  <section class="section">
+    <div class="container-wide">
+      <div class="mx-auto max-w-5xl">
+        <h1 class="text-4xl font-display">{lang === "it" ? "Blog" : "Blog"}</h1>
+        <p class="mt-4 text-lg text-ink-700 dark:text-ink-200">
+          {lang === "it"
+            ? "Scritti su comunicazione, AI e cultura digitale."
+            : "Writing on communication, AI, and digital culture."}
+        </p>
+        <div class="mt-8">
+          <SearchBar placeholder={lang === "it" ? "Cerca articoli" : "Search articles"} />
+        </div>
+        <div class="mt-8 grid gap-6 md:grid-cols-2">
+          {posts.map((entry) => (
+            <div data-search={`${entry.data.title} ${entry.data.description} ${entry.data.tags.join(" ")}`}>
+              <BlogCard entry={entry} lang={lang} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

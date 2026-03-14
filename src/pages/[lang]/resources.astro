@@ -1,0 +1,58 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { content } from "../../data/content";
+import { languages, site } from "../../data/site";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const { lang } = Astro.params;
+const categories = content[lang].resources;
+
+const icons = {
+  ai: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-8 w-8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12l1.5-1.5L5 9l1.5-1.5L5 6m14 6l-1.5-1.5L19 9l-1.5-1.5L19 6M8.5 15.5l7-7M8 19h.01M16 19h.01M12 5h.01" /></svg>`,
+  research: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-8 w-8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3l8 4-8 4-8-4 8-4Zm0 8l6.5-3.25M6 10.5v4.5c0 2.5 4 4.5 6 4.5s6-2 6-4.5v-4.5" /></svg>`,
+  automation: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-8 w-8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 2L3 14h7l-1 8 10-12h-7l1-8Z" /></svg>`,
+  other: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-8 w-8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h7v7H3V7Zm11 0h7v7h-7V7ZM3 18h7v3H3v-3Zm11 0h7v3h-7v-3Z" /></svg>`
+};
+---
+
+<BaseLayout
+  title={`${lang === "it" ? "Risorse" : "Resources"} — ${site.name}`}
+  description={lang === "it" ? "Strumenti e letture selezionate." : "Curated tools and references."}
+  lang={lang}
+>
+  <section class="section">
+    <div class="container-wide">
+      <div class="mx-auto max-w-4xl space-y-10">
+        <div>
+          <h1 class="text-4xl font-display">{lang === "it" ? "Risorse" : "Resources"}</h1>
+          <p class="mt-4 text-lg text-ink-700 dark:text-ink-200">
+            {lang === "it"
+              ? "Strumenti pratici che uso per ricerca e sperimentazione."
+              : "Tools I rely on for research and experimentation."}
+          </p>
+        </div>
+        <div class="grid gap-8 md:grid-cols-2">
+          {categories.map((category) => (
+            <div class="glass">
+              <div class="flex items-center gap-3 text-ink-700 dark:text-ink-200" set:html={icons[category.key]}></div>
+              <h2 class="mt-4 text-xl font-display">{category.title}</h2>
+              <ul class="mt-4 space-y-3 text-sm text-ink-700 dark:text-ink-200">
+                {category.items.map((item) => (
+                  <li class="rounded-2xl border border-ink-200/70 p-4 dark:border-ink-700/70">
+                    <a class="text-base font-semibold hover:underline" href={item.url} target="_blank" rel="noreferrer">
+                      {item.name}
+                    </a>
+                    <p class="mt-1 text-sm text-ink-600 dark:text-ink-300">{item.description}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

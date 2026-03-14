@@ -1,0 +1,51 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { content } from "../../data/content";
+import { languages, site } from "../../data/site";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const { lang } = Astro.params;
+const t = content[lang].about;
+---
+
+<BaseLayout
+  title={`${lang === "it" ? "Chi sono" : "About"} — ${site.name}`}
+  description={content[lang].bio}
+  lang={lang}
+>
+  <section class="section">
+    <div class="container-wide">
+      <div class="mx-auto max-w-3xl space-y-10">
+        <div>
+          <h1 class="text-4xl font-display">{lang === "it" ? "Chi sono" : "About"}</h1>
+          <p class="mt-4 text-lg text-ink-700 dark:text-ink-200">{t.bio}</p>
+        </div>
+        <div class="grid gap-8 md:grid-cols-2">
+          <div class="glass">
+            <h2 class="text-2xl font-display">{lang === "it" ? "Interessi" : "Research interests"}</h2>
+            <ul class="mt-4 list-disc space-y-2 pl-5 text-ink-700 dark:text-ink-200">
+              {t.interests.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="glass">
+            <h2 class="text-2xl font-display">{lang === "it" ? "Percorso" : "Academic path"}</h2>
+            <ul class="mt-4 list-disc space-y-2 pl-5 text-ink-700 dark:text-ink-200">
+              {t.path.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div class="glass">
+          <h2 class="text-2xl font-display">{lang === "it" ? "Obiettivi" : "Future goals"}</h2>
+          <p class="mt-3 text-ink-700 dark:text-ink-200">{t.goals}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

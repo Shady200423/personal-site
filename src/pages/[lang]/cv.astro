@@ -1,0 +1,75 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { content } from "../../data/content";
+import { languages, site } from "../../data/site";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const { lang } = Astro.params;
+const t = content[lang].cv;
+---
+
+<BaseLayout
+  title={`CV — ${site.name}`}
+  description={lang === "it" ? "Curriculum vitae." : "Curriculum vitae."}
+  lang={lang}
+>
+  <section class="section">
+    <div class="container-wide">
+      <div class="mx-auto max-w-3xl space-y-10">
+        <div>
+          <h1 class="text-4xl font-display">CV</h1>
+          <p class="mt-4 text-lg text-ink-700 dark:text-ink-200">
+            {lang === "it"
+              ? "Curriculum essenziale, senza dati personali sensibili."
+              : "Essential CV without personal contact details."}
+          </p>
+        </div>
+        <div class="glass">
+          <h2 class="text-2xl font-display">{lang === "it" ? "Formazione" : "Education"}</h2>
+          <ul class="mt-4 list-disc space-y-2 pl-5 text-ink-700 dark:text-ink-200">
+            {t.education.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <div class="glass">
+          <h2 class="text-2xl font-display">{lang === "it" ? "Interessi di ricerca" : "Research interests"}</h2>
+          <ul class="mt-4 list-disc space-y-2 pl-5 text-ink-700 dark:text-ink-200">
+            {t.interests.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <div class="glass">
+          <h2 class="text-2xl font-display">{lang === "it" ? "Progetti" : "Projects"}</h2>
+          <ul class="mt-4 list-disc space-y-2 pl-5 text-ink-700 dark:text-ink-200">
+            {t.projects.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <div class="grid gap-8 md:grid-cols-2">
+          <div class="glass">
+            <h2 class="text-2xl font-display">{lang === "it" ? "Competenze" : "Skills"}</h2>
+            <ul class="mt-4 list-disc space-y-2 pl-5 text-ink-700 dark:text-ink-200">
+              {t.skills.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="glass">
+            <h2 class="text-2xl font-display">{lang === "it" ? "Lingue" : "Languages"}</h2>
+            <ul class="mt-4 list-disc space-y-2 pl-5 text-ink-700 dark:text-ink-200">
+              {t.languages.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

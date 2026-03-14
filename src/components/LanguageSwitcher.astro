@@ -1,0 +1,25 @@
+---
+import { languages } from "../data/site";
+
+const { lang, path } = Astro.props;
+const other = languages.find((item) => item.code !== lang);
+const switchPath = path.startsWith(`/${lang}/`)
+  ? path.replace(`/${lang}/`, `/${other.code}/`)
+  : `/${other.code}/`;
+---
+
+<a
+  class="inline-flex items-center rounded-full border border-ink-300/70 px-3 py-1 text-xs uppercase tracking-wide text-ink-800 transition hover:border-ink-800 dark:border-ink-600/70 dark:text-ink-100 dark:hover:border-ink-200"
+  href={switchPath}
+  data-lang-switch={other.code}
+>
+  {other.label}
+</a>
+
+<script>
+  const link = document.querySelector("[data-lang-switch]");
+  link?.addEventListener("click", (event) => {
+    const lang = event.currentTarget.dataset.langSwitch;
+    if (lang) localStorage.setItem("language", lang);
+  });
+</script>

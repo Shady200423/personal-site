@@ -1,0 +1,61 @@
+---
+import "../styles/global.css";
+import { site } from "../data/site";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import Analytics from "@vercel/analytics/astro";
+
+const {
+  title = site.title,
+  description = site.description,
+  lang = "en",
+  image = site.ogImage ?? "/images/og-image.png",
+  ogType = "website"
+} = Astro.props;
+
+const url = Astro.url;
+const base = Astro.site ?? url;
+const canonical = new URL(url.pathname, base);
+const otherLang = lang === "en" ? "it" : "en";
+const alternatePath = url.pathname.startsWith(`/${lang}/`)
+  ? url.pathname.replace(`/${lang}/`, `/${otherLang}/`)
+  : `/${otherLang}/`;
+const alternate = new URL(alternatePath, base);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={otherLang} href={alternate} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, base)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#f7f5f2" />
+    <script>
+      (() => {
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const useDark = stored ? stored === "dark" : prefersDark;
+        document.documentElement.classList.toggle("dark", useDark);
+      })();
+    </script>
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-noise bg-[size:8px_8px]">
+    <Navbar lang={lang} path={url.pathname} />
+    <main>
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <Analytics />
+  </body>
+</html>

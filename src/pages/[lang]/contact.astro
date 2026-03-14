@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { content } from "../../data/content";
+import { languages, site } from "../../data/site";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const { lang } = Astro.params;
+const t = content[lang].contact;
+---
+
+<BaseLayout
+  title={`${lang === "it" ? "Contatti" : "Contact"} — ${site.name}`}
+  description={t.blurb}
+  lang={lang}
+>
+  <section class="section">
+    <div class="container-wide">
+      <div class="mx-auto max-w-4xl grid gap-10 lg:grid-cols-[1fr_1fr]">
+        <div>
+          <h1 class="text-4xl font-display">{lang === "it" ? "Contatti" : "Contact"}</h1>
+          <p class="mt-4 text-lg text-ink-700 dark:text-ink-200">{t.blurb}</p>
+          <div class="mt-8 space-y-2 text-sm">
+            <p><strong>Email:</strong> <a href={`mailto:${site.email}`}>{site.email}</a></p>
+            <p><strong>GitHub:</strong> <a href={site.social.github}>Shady200423</a></p>
+            <p><strong>LinkedIn:</strong> <a href={site.social.linkedin}>nicola-paonessa</a></p>
+          </div>
+        </div>
+        <form
+          class="glass space-y-4"
+          method="POST"
+          action="https://formspree.io/f/mnqxyzab"
+        >
+          <div>
+            <label class="text-xs uppercase tracking-wide text-ink-600 dark:text-ink-300" for="name">
+              {t.form.name}
+            </label>
+            <input
+              id="name"
+              name="name"
+              class="mt-2 w-full rounded-2xl border border-ink-200/80 bg-white/70 px-4 py-3 text-sm text-ink-900 outline-none transition focus:border-ink-500 dark:border-ink-700/80 dark:bg-ink-800/70 dark:text-ink-100"
+              type="text"
+              required
+            />
+          </div>
+          <div>
+            <label class="text-xs uppercase tracking-wide text-ink-600 dark:text-ink-300" for="email">
+              {t.form.email}
+            </label>
+            <input
+              id="email"
+              name="email"
+              class="mt-2 w-full rounded-2xl border border-ink-200/80 bg-white/70 px-4 py-3 text-sm text-ink-900 outline-none transition focus:border-ink-500 dark:border-ink-700/80 dark:bg-ink-800/70 dark:text-ink-100"
+              type="email"
+              required
+            />
+          </div>
+          <div>
+            <label class="text-xs uppercase tracking-wide text-ink-600 dark:text-ink-300" for="message">
+              {t.form.message}
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              rows="5"
+              class="mt-2 w-full rounded-2xl border border-ink-200/80 bg-white/70 px-4 py-3 text-sm text-ink-900 outline-none transition focus:border-ink-500 dark:border-ink-700/80 dark:bg-ink-800/70 dark:text-ink-100"
+              required
+            ></textarea>
+          </div>
+          <button class="solid-button" type="submit">{t.form.button}</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

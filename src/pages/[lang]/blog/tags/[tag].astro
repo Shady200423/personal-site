@@ -1,0 +1,55 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { languages, site } from "../../../../data/site";
+import BlogCard from "../../../../components/BlogCard.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  const paths = [];
+
+  languages.forEach((language) => {
+    const tags = new Set(
+      posts
+        .filter((entry) => entry.data.lang === language.code)
+        .flatMap((entry) => entry.data.tags.map((tag) => tag.toLowerCase()))
+    );
+
+    tags.forEach((tag) => {
+      paths.push({ params: { lang: language.code, tag } });
+    });
+  });
+
+  return paths;
+}
+
+const { lang, tag } = Astro.params;
+const tagLabel = decodeURIComponent(tag);
+const posts = (await getCollection("blog"))
+  .filter((entry) => entry.data.lang === lang)
+  .filter((entry) =>
+    entry.data.tags.map((item) => item.toLowerCase()).includes(tagLabel.toLowerCase())
+  )
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout
+  title={`${tagLabel} — ${site.name}`}
+  description={`Articles tagged with ${tagLabel}.`}
+  lang={lang}
+>
+  <section class="section">
+    <div class="container-wide">
+      <div class="mx-auto max-w-5xl">
+        <h1 class="text-4xl font-display">
+          {lang === "it" ? "Tag" : "Tag"}: {tagLabel}
+        </h1>
+        <div class="mt-8 grid gap-6 md:grid-cols-2">
+          {posts.map((entry) => (
+            <BlogCard entry={entry} lang={lang} />
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

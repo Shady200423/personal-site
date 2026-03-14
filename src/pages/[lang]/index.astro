@@ -1,0 +1,122 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { content } from "../../data/content";
+import { site, languages } from "../../data/site";
+import { getCollection } from "astro:content";
+import BlogCard from "../../components/BlogCard.astro";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const { lang } = Astro.params;
+const t = content[lang];
+const posts = (await getCollection("blog"))
+  .filter((entry) => entry.data.lang === lang)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const substackUrl = site.newsletter?.substackUrl;
+---
+
+<BaseLayout title={site.title} description={site.description} lang={lang}>
+  <section class="section">
+    <div class="container-wide">
+      <div class="grid gap-10 lg:grid-cols-[1.3fr_0.7fr] lg:items-center">
+        <div>
+          <p class="text-xs uppercase tracking-[0.4em] text-ink-500 dark:text-ink-300">
+            Communication · AI · Research
+          </p>
+          <h1 class="mt-5 text-5xl font-display leading-tight md:text-6xl">
+            {site.name}
+          </h1>
+          <p class="mt-6 max-w-xl text-lg text-ink-700 dark:text-ink-200">{t.hero.subtitle}</p>
+          <div class="mt-6 flex flex-wrap gap-2">
+            <span class="tag">AI</span>
+            <span class="tag">{lang === "it" ? "Comunicazione" : "Communication"}</span>
+            <span class="tag">{lang === "it" ? "Sistemi digitali" : "Digital systems"}</span>
+          </div>
+          <div class="mt-8 flex flex-wrap gap-4">
+            <a class="solid-button" href={t.hero.buttons[0].href}>{t.hero.buttons[0].label}</a>
+            <a class="outline-button" href={t.hero.buttons[1].href}>{t.hero.buttons[1].label}</a>
+          </div>
+        </div>
+        <div class="glass space-y-6">
+          <div class="flex items-center gap-4">
+            <div class="h-16 w-16 overflow-hidden rounded-3xl border border-ink-200/60 bg-ink-100 dark:border-ink-700/60 dark:bg-ink-800">
+              <img src="/images/headshot.jpg" alt="Nicola Paonessa headshot" loading="lazy" />
+            </div>
+            <div>
+              <p class="text-xs uppercase tracking-[0.3em] text-ink-600 dark:text-ink-300">
+                {lang === "it" ? "Bio breve" : "Short bio"}
+              </p>
+              <p class="mt-2 text-sm text-ink-700 dark:text-ink-200">{t.bio}</p>
+            </div>
+          </div>
+          <div class="grid gap-4">
+            {t.featured.map((item) => (
+              <a class="rounded-2xl border border-ink-200/70 p-4 transition hover:border-ink-500 dark:border-ink-700/70 dark:hover:border-ink-500" href={item.href}>
+                <h3 class="font-display text-xl">{item.title}</h3>
+                <p class="mt-2 text-sm text-ink-700 dark:text-ink-200">{item.description}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-wide">
+      <div class="flex items-end justify-between gap-6">
+        <div>
+          <h2 class="text-3xl font-display">Latest blog posts</h2>
+          <p class="mt-2 text-ink-600 dark:text-ink-300">
+            {lang === "it" ? "Ultimi articoli" : "Recent writing on AI and communication."}
+          </p>
+        </div>
+        <a class="outline-button" href={`/${lang}/blog/`}>
+          {lang === "it" ? "Vai al blog" : "Go to blog"}
+        </a>
+      </div>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        {posts.map((entry) => (
+          <BlogCard entry={entry} lang={lang} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-wide">
+      <div class="glass grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+        <div>
+          <h2 class="text-3xl font-display">{t.newsletter.title}</h2>
+          <p class="mt-2 text-ink-700 dark:text-ink-200">{t.newsletter.description}</p>
+        </div>
+        <form
+          class="flex flex-col gap-3 sm:flex-row"
+          method="post"
+          action={substackUrl || "#"}
+        >
+          <input
+            class="w-full rounded-full border border-ink-200/80 bg-white/70 px-4 py-3 text-sm text-ink-900 outline-none transition focus:border-ink-500 dark:border-ink-700/80 dark:bg-ink-800/70 dark:text-ink-100"
+            type="email"
+            name="email"
+            placeholder={lang === "it" ? "La tua email" : "Your email"}
+          />
+          <button class="solid-button" type="submit">
+            {t.newsletter.button}
+          </button>
+        </form>
+        {!substackUrl && (
+          <p class="text-xs text-ink-500 dark:text-ink-300">
+            {lang === "it"
+              ? "Aggiungi un URL Substack per attivare il form."
+              : "Add a Substack URL to activate the form."}
+          </p>
+        )}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

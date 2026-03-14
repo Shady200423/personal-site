@@ -1,0 +1,59 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { content } from "../../data/content";
+import { languages, site } from "../../data/site";
+
+export function getStaticPaths() {
+  return languages.map((language) => ({ params: { lang: language.code } }));
+}
+
+const { lang } = Astro.params;
+const t = content[lang].portfolio;
+---
+
+<BaseLayout
+  title={`${lang === "it" ? "Portfolio" : "Portfolio"} — ${site.name}`}
+  description={lang === "it" ? "Progetti selezionati." : "Selected projects."}
+  lang={lang}
+>
+  <section class="section">
+    <div class="container-wide">
+      <div class="mx-auto max-w-4xl space-y-10">
+        <div>
+          <h1 class="text-4xl font-display">Portfolio</h1>
+          <p class="mt-4 text-lg text-ink-700 dark:text-ink-200">
+            {lang === "it"
+              ? "Una selezione di lavori digitali, accademici e sperimentali."
+              : "A selection of digital, academic, and experimental work."}
+          </p>
+        </div>
+        <div class="grid gap-8 md:grid-cols-3">
+          <div class="glass">
+            <h2 class="text-xl font-display">{lang === "it" ? "Progetti digitali" : "Digital projects"}</h2>
+            <ul class="mt-4 list-disc space-y-2 pl-5 text-ink-700 dark:text-ink-200">
+              {t.digital.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="glass">
+            <h2 class="text-xl font-display">{lang === "it" ? "Progetti accademici" : "Academic projects"}</h2>
+            <ul class="mt-4 list-disc space-y-2 pl-5 text-ink-700 dark:text-ink-200">
+              {t.academic.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="glass">
+            <h2 class="text-xl font-display">{lang === "it" ? "Esperimenti" : "Experiments"}</h2>
+            <ul class="mt-4 list-disc space-y-2 pl-5 text-ink-700 dark:text-ink-200">
+              {t.experiments.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

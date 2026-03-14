@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site, languages } from "../data/site";
+---
+
+<BaseLayout title={site.title} description={site.description} lang="en">
+  <section class="section">
+    <div class="container-wide">
+      <div class="mx-auto max-w-2xl text-center">
+        <h1 class="text-4xl font-display md:text-5xl">Welcome</h1>
+        <p class="mt-4 text-lg text-ink-700 dark:text-ink-200">
+          Choose your preferred language to continue.
+        </p>
+        <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          {languages.map((language) => (
+            <a class="solid-button" href={`/${language.code}/`}>{language.label}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const saved = localStorage.getItem("language");
+  const browser = navigator.language?.startsWith("it") ? "it" : "en";
+  const target = saved || browser;
+  if (location.pathname === "/" && (target === "en" || target === "it")) {
+    window.location.replace(`/${target}/`);
+  }
+</script>

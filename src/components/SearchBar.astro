@@ -1,0 +1,31 @@
+---
+const { placeholder } = Astro.props;
+---
+
+<div class="glass flex flex-col gap-3">
+  <label class="text-xs uppercase tracking-wide text-ink-600 dark:text-ink-300" for="search-input">
+    {placeholder ?? "Search articles"}
+  </label>
+  <input
+    id="search-input"
+    class="w-full rounded-2xl border border-ink-200/80 bg-white/70 px-4 py-3 text-sm text-ink-900 outline-none transition focus:border-ink-500 dark:border-ink-700/80 dark:bg-ink-800/70 dark:text-ink-100"
+    type="search"
+    placeholder={placeholder ?? "Search articles"}
+    autocomplete="off"
+  />
+</div>
+
+<script>
+  const input = document.getElementById("search-input");
+  const cards = Array.from(document.querySelectorAll("[data-search]"));
+
+  const normalize = (value) => value.toLowerCase().trim();
+
+  input?.addEventListener("input", (event) => {
+    const query = normalize(event.target.value);
+    cards.forEach((card) => {
+      const haystack = normalize(card.dataset.search || "");
+      card.classList.toggle("hidden", query.length > 0 && !haystack.includes(query));
+    });
+  });
+</script>

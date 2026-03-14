@@ -1,0 +1,21 @@
+---
+import TagList from "./TagList.astro";
+
+const { entry, lang } = Astro.props;
+const { title, description, date, tags } = entry.data;
+const formatted = new Intl.DateTimeFormat(lang, {
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+}).format(date);
+---
+
+<article class="glass flex h-full flex-col gap-4">
+  <div class="text-xs uppercase tracking-wide text-ink-600 dark:text-ink-300">{formatted}</div>
+  <h3 class="text-2xl font-display">{title}</h3>
+  <p class="text-ink-700 dark:text-ink-200">{description}</p>
+  <TagList tags={tags} lang={lang} />
+  <a class="mt-auto text-sm font-semibold uppercase tracking-wide hover:underline" href={`/${lang}/blog/${entry.slug}/`}>
+    {lang === "it" ? "Leggi" : "Read article"}
+  </a>
+</article>
